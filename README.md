@@ -25,3 +25,14 @@ pip freeze > requirements.txt
 ```shell
 pip install -r requirements.txt
 ```
+
+- build docker image
+
+```shell
+docker build -t flask_projects .
+```
+- run docker container
+
+```shell
+docker run -it -P flask_projects
+```
