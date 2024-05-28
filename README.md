@@ -29,10 +29,10 @@ pip install -r requirements.txt
 - build docker image
 
 ```shell
-docker build -t flask_projects .
+docker build -t flask_projects_image2url .
 ```
 - run docker container
 
 ```shell
-docker run -it -P flask_projects
+docker run -it -P flask_projects_image2url
 ```
