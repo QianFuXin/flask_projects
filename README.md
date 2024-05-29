@@ -5,13 +5,13 @@
 - black
 
 ```shell
-black app.py
+black app.py models.py routers
 ```
 
 - pylint
 
 ```shell
-pylint app.py
+pylint app.py models.py routers
 ```
 
 - requirements
@@ -34,5 +34,5 @@ docker build -t flask_projects_backend .
 - run docker container
 
 ```shell
-docker run -it -P flask_projects_backend
+docker run -it -P --env-flie .env flask_projects_backend
 ```
