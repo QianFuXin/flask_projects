@@ -13,6 +13,7 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, abort, jsonify
 from flask_cors import CORS
+from flask_migrate import Migrate
 from werkzeug.exceptions import HTTPException
 
 from models import db
@@ -23,10 +24,7 @@ load_dotenv(".env")
 app.config.from_mapping(os.environ)
 db.init_app(app)
 CORS(app)
-
-with app.app_context():
-    db.create_all()
-
+migrate = Migrate(app, db)
 # 注册蓝本
 app.register_blueprint(user.app)
 

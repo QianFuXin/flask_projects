@@ -10,7 +10,7 @@
 """
 from flask import Blueprint, request
 
-from models import db, User
+from models import db, User, Car
 
 app = Blueprint("user", __name__, url_prefix="/user")
 
@@ -53,3 +53,15 @@ def user_update(id):
     user.email = request.form["email"]
     db.session.commit()
     return "yes"
+
+
+@app.get("/getUserByCar/<int:id>")
+def getUserByCar(id):
+    car = db.get_or_404(Car, id, description="无用户")
+    return [i.to_dict() for i in car.user]
+
+
+@app.get("/getCarByUser/<int:id>")
+def getCarByUser(id):
+    user = db.get_or_404(User, id, description="无用户")
+    return user.car.to_dict()
