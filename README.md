@@ -1,6 +1,6 @@
 # flask_projects
 
-一些基于flask的项目
+使用flask-admin实现基本的表格增删查改
 
 - black
 
