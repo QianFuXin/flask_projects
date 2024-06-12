@@ -1,6 +1,6 @@
 # flask_projects
 
-一些基于flask的项目
+实现jwt的token发布和验证
 
 - black
 
@@ -29,10 +29,10 @@ pip install -r requirements.txt
 - build docker image
 
 ```shell
-docker build -t flask_projects .
+docker build -t flask_projects_token .
 ```
 - run docker container
 
 ```shell
-docker run -it -P flask_projects
+docker run -it -P flask_projects_token
 ```
