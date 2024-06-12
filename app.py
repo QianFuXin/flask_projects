@@ -20,6 +20,12 @@ from flask_babelex import Babel
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+"""
+默认的环境变量
+SECRET_KEY = ""
+SQLALCHEMY_DATABASE_URI = ""
+FLASK_ADMIN_SWATCH = 'flatly'
+"""
 load_dotenv(".env")
 app.config.from_mapping(os.environ)
 db = SQLAlchemy()
