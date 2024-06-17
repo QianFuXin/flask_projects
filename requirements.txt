@@ -29,3 +29,4 @@ tomlkit==0.12.5
 typing_extensions==4.12.0
 Werkzeug==3.0.3
 flask-redis=0.4.0
+Flask-PyMongo=2.3.0

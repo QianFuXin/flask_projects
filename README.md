@@ -52,3 +52,4 @@ flask db upgrade
 - redis
 - 蓝图
 - 跨域
+- mongo
