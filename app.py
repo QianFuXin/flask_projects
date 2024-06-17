@@ -13,6 +13,8 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, abort, jsonify
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_migrate import Migrate
 from flask_pymongo import PyMongo
 from flask_redis import FlaskRedis
@@ -33,6 +35,13 @@ db.init_app(app)
 CORS(app)
 redis_client = FlaskRedis(app)
 mongo_client = PyMongo(app)
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["300 per minute", "10 per second"],
+    storage_uri="memory://",
+    strategy="fixed-window"
+)
 migrate = Migrate(app, db)
 # 注册蓝本
 app.register_blueprint(user.app)
@@ -78,3 +87,17 @@ def redis():
 def mongo():
     # 详细接口查看pymongo文档
     return str(mongo_client.db.testcol.find_one())
+
+@app.route("/slow")
+@limiter.limit("1 per day")
+def slow():
+    return "24"
+
+@app.route("/fast")
+def fast():
+    return "42"
+
+@app.route("/ping")
+@limiter.exempt
+def ping():
+    return 'PONG'
