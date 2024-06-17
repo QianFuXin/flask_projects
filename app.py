@@ -20,6 +20,7 @@ from flask_pymongo import PyMongo
 from flask_redis import FlaskRedis
 from werkzeug.exceptions import HTTPException
 
+from extension.email import FlaskQQEmail
 from models import db
 from routers import user
 
@@ -29,6 +30,8 @@ load_dotenv(".env")
 SQLALCHEMY_DATABASE_URI = ""
 REDIS_URL = ""
 MONGO_URI= ""
+QQ_EMAIL= ""
+QQ_EMAIL_PASSWORD= ""
 """
 app.config.from_mapping(os.environ)
 db.init_app(app)
@@ -40,8 +43,9 @@ limiter = Limiter(
     app=app,
     default_limits=["300 per minute", "10 per second"],
     storage_uri="memory://",
-    strategy="fixed-window"
+    strategy="fixed-window",
 )
+email_client = FlaskQQEmail(app)
 migrate = Migrate(app, db)
 # 注册蓝本
 app.register_blueprint(user.app)
@@ -88,16 +92,32 @@ def mongo():
     # 详细接口查看pymongo文档
     return str(mongo_client.db.testcol.find_one())
 
+
 @app.route("/slow")
 @limiter.limit("1 per day")
 def slow():
     return "24"
 
+
 @app.route("/fast")
 def fast():
     return "42"
 
+
 @app.route("/ping")
 @limiter.exempt
 def ping():
-    return 'PONG'
+    return "PONG"
+
+
+@app.route("/email")
+def email():
+    to = "Mr_Qian_ives@163.com"
+    subject = "Test Email from yagmail"
+    contents = [
+        "This is the body, and here is just text http://somedomain/image.png",
+        "You can find an audio file attached.",
+        "1.py",
+    ]
+    email_client.yag.send(to=to, subject=subject, contents=contents)
+    return "ok"

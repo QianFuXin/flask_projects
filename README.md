@@ -5,13 +5,13 @@
 - black
 
 ```shell
-black app.py models.py routers
+black app.py models.py routers extension
 ```
 
 - pylint
 
 ```shell
-pylint app.py models.py routers
+pylint app.py --disable=C0115,C0116,R0903 models.py routers extension
 ```
 
 - requirements
@@ -54,3 +54,4 @@ flask db upgrade
 - 跨域
 - mongo
 - 接口速度限制
+- QQ邮箱发送邮件
