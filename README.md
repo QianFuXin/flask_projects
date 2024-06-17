@@ -47,3 +47,8 @@ flask db upgrade
 # 如果迁移到新的数据库 下面一步
 flask db upgrade
 ```
+### 已经实现的功能
+- 数据库
+- redis
+- 蓝图
+- 跨域

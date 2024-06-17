@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from flask import Flask, abort, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
+from flask_redis import FlaskRedis
 from werkzeug.exceptions import HTTPException
 
 from models import db
@@ -21,9 +22,14 @@ from routers import user
 
 app = Flask(__name__)
 load_dotenv(".env")
+"""
+SQLALCHEMY_DATABASE_URI = ""
+REDIS_URL = ""
+"""
 app.config.from_mapping(os.environ)
 db.init_app(app)
 CORS(app)
+redis_client = FlaskRedis(app)
 migrate = Migrate(app, db)
 # 注册蓝本
 app.register_blueprint(user.app)
@@ -57,3 +63,9 @@ def index():
     # 通过这种方式 快速返回
     abort(408, description="Not Found")
     return "Hello World"
+
+
+@app.route("/redis")
+def redis():
+    # 详细接口查看redis-py文档
+    return redis_client.get("potato")
