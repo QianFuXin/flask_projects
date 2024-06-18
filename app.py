@@ -10,8 +10,9 @@
 """
 import os
 
+import requests
 from dotenv import load_dotenv
-from flask import Flask, abort, jsonify
+from flask import Flask, abort, jsonify, request, g
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -32,8 +33,10 @@ REDIS_URL = ""
 MONGO_URI= ""
 QQ_EMAIL= ""
 QQ_EMAIL_PASSWORD= ""
+STRAPI_DOMAIN= ""
 """
 app.config.from_mapping(os.environ)
+strapi_domain = app.config.get("STRAPI_DOMAIN", "localhost:1337")
 db.init_app(app)
 CORS(app)
 redis_client = FlaskRedis(app)
@@ -74,10 +77,34 @@ app.register_error_handler(HTTPException, handle_4xx)
 app.register_error_handler(Exception, handle_5xx)
 
 
+# 请求前
+@app.before_request
+def before_request():
+    # 使用strapi作为认证中心
+    token = request.headers.get("Authorization")
+    if not token:
+        abort(401, description="Unauthorized")
+    if token.split(" ")[0] != "Bearer":
+        abort(401, description="Unauthorized")
+    res = requests.get(
+        f"http://{strapi_domain}/api/users/me", headers={"Authorization": token}
+    )
+    if res.status_code != 200:
+        abort(401, description="Unauthorized")
+    g.user_id = res.json().get("id")
+
+
 @app.route("/")
 def index():
     # 通过这种方式 快速返回
     abort(408, description="Not Found")
+    return "Hello World"
+
+
+@app.route("/strapi")
+def strapi():
+    # 获取user_id
+    print(g.get("user_id"))
     return "Hello World"
 
 

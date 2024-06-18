@@ -55,3 +55,4 @@ flask db upgrade
 - mongo
 - 接口速度限制
 - QQ邮箱发送邮件
+- strapi验证
