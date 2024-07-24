@@ -56,3 +56,4 @@ flask db upgrade
 - 接口速度限制
 - QQ邮箱发送邮件
 - strapi验证
+- rabbitMQ生产者

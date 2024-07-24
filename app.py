@@ -10,6 +10,7 @@
 """
 import os
 
+import pika
 import requests
 from dotenv import load_dotenv
 from flask import Flask, abort, jsonify, request, g
@@ -22,6 +23,7 @@ from flask_redis import FlaskRedis
 from werkzeug.exceptions import HTTPException
 
 from extension.email import FlaskQQEmail
+from extension.mq import FlaskRaMQ
 from models import db
 from routers import user
 
@@ -49,6 +51,7 @@ limiter = Limiter(
     strategy="fixed-window",
 )
 email_client = FlaskQQEmail(app)
+mq_client = FlaskRaMQ(app)
 migrate = Migrate(app, db)
 # 注册蓝本
 app.register_blueprint(user.app)
@@ -80,6 +83,7 @@ app.register_error_handler(Exception, handle_5xx)
 # 请求前
 @app.before_request
 def before_request():
+    return
     # 使用strapi作为认证中心
     token = request.headers.get("Authorization")
     if not token:
@@ -147,4 +151,24 @@ def email():
         "1.py",
     ]
     email_client.yag.send(to=to, subject=subject, contents=contents)
+    return "ok"
+
+
+@app.route("/mq_producter")
+def mq_producter():
+    channel = mq_client.channel
+    # 声明一个队列
+    channel.queue_declare(queue="log_queue", durable=True)
+    for _ in range(100):
+        # 如果涉及到对象 可以用json.dumps()序列化
+        message = "Hello World1"
+        channel.basic_publish(
+            exchange="",
+            routing_key="log_queue",
+            body=message,
+            properties=pika.BasicProperties(
+                delivery_mode=2,  # make message persistent
+            ),
+        )
+        print(f" [x] Sent {message}")
     return "ok"
