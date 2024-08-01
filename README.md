@@ -1,7 +1,6 @@
 # flask_projects
 
-一些基于flask的项目
-
+提供音乐资源的API接口
 - black
 
 ```shell
