@@ -28,10 +28,10 @@ pip install -r requirements.txt
 - build docker image
 
 ```shell
-docker build -t flask_projects .
+docker build -t music_backend .
 ```
 - run docker container
 
 ```shell
-docker run -it -P flask_projects
+docker run -d -p 9999:5000 -v /xx/static/:/app/static/ --name music_backend_p music_backend
 ```
