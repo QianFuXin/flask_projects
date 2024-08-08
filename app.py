@@ -12,14 +12,13 @@ import os
 import random
 import time
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
 
-CORS(app)
 # 定义音乐文件夹路径
-MUSIC_FOLDER = os.path.join(os.getcwd(), "static")
+MUSIC_FOLDER = os.path.join(os.getcwd(), "static", "music")
+print(MUSIC_FOLDER)
 app.config['MUSIC_FOLDER'] = MUSIC_FOLDER
 
 # 全局缓存字典
@@ -41,8 +40,8 @@ def get_all_files(directory):
     return file_list
 
 
-@app.route('/api/music', methods=['GET'])
-def get_music_list():
+# 获取音乐数据
+def get_all_music():
     global music_files_cache
     current_time = time.time()
     # 检查缓存是否存在且未过期
@@ -51,12 +50,29 @@ def get_music_list():
     else:
         # 重新生成数据
         music_files = get_all_files(app.config['MUSIC_FOLDER'])
+        # 只保留mp3文件
+        music_files = [f for f in music_files if f.endswith('.mp3')]
         # 更新缓存
         music_files_cache['data'] = music_files
         music_files_cache['timestamp'] = current_time
+    return music_files
+
+
+@app.route('/api/music', methods=['GET'])
+def get_music_list():
+    music_files = get_all_music()
+    # 获取search参数实现查询功能
+    search = request.args.get('search')
+    if search:
+        music_files = [f for f in music_files if search in os.path.basename(f)]
     if len(music_files) > 5:
         music_files = random.sample(music_files, 5)
     data = [{"title": os.path.splitext(os.path.basename(mf))[0], "file": f"{request.host_url}static/{mf}", "howl": None}
             for mf in
             music_files]
     return jsonify(data)
+
+
+@app.get('/')
+def index():
+    return render_template('index.html')

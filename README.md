@@ -28,10 +28,19 @@ pip install -r requirements.txt
 - build docker image
 
 ```shell
-docker build -t flask_projects .
+docker build -t music_backend .
 ```
 - run docker container
 
 ```shell
-docker run -it -P flask_projects
+version: '3'
+
+services:
+  music_backend:
+    image: music_backend
+    ports:
+      - "9999:5000"
+    volumes:
+      - "/root/music_web/static/:/app/static/music/"
+    restart: always
 ```
