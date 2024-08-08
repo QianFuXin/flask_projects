@@ -18,7 +18,6 @@ app = Flask(__name__)
 
 # 定义音乐文件夹路径
 MUSIC_FOLDER = os.path.join(os.getcwd(), "static", "music")
-print(MUSIC_FOLDER)
 app.config['MUSIC_FOLDER'] = MUSIC_FOLDER
 
 # 全局缓存字典
@@ -67,7 +66,7 @@ def get_music_list():
         music_files = [f for f in music_files if search in os.path.basename(f)]
     if len(music_files) > 5:
         music_files = random.sample(music_files, 5)
-    data = [{"title": os.path.splitext(os.path.basename(mf))[0], "file": f"{request.host_url}static/{mf}", "howl": None}
+    data = [{"title": os.path.splitext(os.path.basename(mf))[0], "file": f"{request.host_url}static/music/{mf}", "howl": None}
             for mf in
             music_files]
     return jsonify(data)
